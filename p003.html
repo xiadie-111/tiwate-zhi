@@ -48,7 +48,7 @@ summary{cursor:pointer;font-weight:700;color:var(--accent)}
  border:0;border-radius:999px;padding:.6rem 1.1rem;font-size:.9rem;box-shadow:0 6px 20px rgba(0,0,0,.2);display:none;z-index:99}
 </style>
 </head>
-<body data-stamp="1792671182">
+<body>
 <div class='bar'><a href='index.html'>← 全部篇目</a></div>
 <div class="wrap">
 <div class='kicker'>须弥卷 · 003</div>
@@ -268,16 +268,22 @@ summary{cursor:pointer;font-weight:700;color:var(--accent)}
 <button id="upd">有新内容，点我刷新</button>
 <script>
 (function(){
-  var mine = document.body.dataset.stamp || '';
+  var base = null;
   function poll(){
     fetch('/version',{cache:'no-store'}).then(function(r){return r.text()}).then(function(v){
-      var b=document.getElementById('upd');
-      if(v && v.trim()!==mine){ b.style.display='block'; }
+      v = (v||'').trim();
+      if(!v) return;
+      if(base === null){ base = v; return; }   // 首次只记基线，不弹
+      if(v !== base){
+        var b = document.getElementById('upd');
+        if(b) b.style.display = 'block';
+      }
     }).catch(function(){});
   }
+  setTimeout(poll, 1500);
   setInterval(poll, 20000);
-  var b=document.getElementById('upd');
-  if(b){ b.onclick=function(){ location.reload(); }; }
+  var b = document.getElementById('upd');
+  if(b){ b.onclick = function(){ location.reload(); }; }
 })();
 </script>
 </body></html>
